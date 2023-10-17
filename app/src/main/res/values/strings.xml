@@ -1,5 +1,10 @@
 <resources>
-    <string name="app_name">我的第一个应用</string>
+    <string name="app_name">我的应用</string>
     <string name="Hello_World">Hello World</string>
     <string name="click_me_button">click_me</string>
+    <string name="change_text">change text</string>
+    <string name="Hello">Hello</string>
+    <string name="JNU">JNU</string>
+    <string name="change">交换成功</string>
+    <string name="hello_android">你好Android</string>
 </resources>
