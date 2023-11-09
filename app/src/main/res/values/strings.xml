@@ -7,4 +7,7 @@
     <string name="JNU">JNU</string>
     <string name="change">交换成功</string>
     <string name="hello_android">你好Android</string>
+    <string name="string_item_name">name</string>
+    <string name="string_ok">ok</string>
+
 </resources>
