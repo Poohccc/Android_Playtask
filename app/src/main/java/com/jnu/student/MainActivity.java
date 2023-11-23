@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.jnu.student.data.BookItem;
+import com.jnu.student.data.DataBank;
 
 import java.util.ArrayList;
 
@@ -36,8 +37,11 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView recycle_view_books = findViewById(R.id.recycle_view_books);
         //为线性布局
         recycle_view_books.setLayoutManager(new LinearLayoutManager(this));
-        bookItems.add(new BookItem("软件项目管理案例教程（第4版）", R.drawable.book_2));
-        bookItems.add(new BookItem("创新工程实践", R.drawable.book_no_name));
+        bookItems = new DataBank().LoadBookItems(MainActivity.this);
+        if(bookItems.size()==0){
+            bookItems.add(new BookItem("软件项目管理案例教程（第4版）", R.drawable.book_2));
+            bookItems.add(new BookItem("创新工程实践", R.drawable.book_no_name));
+        }
 
 
         bookItemsAdapter = new BookItemsAdapter(bookItems);
@@ -60,9 +64,25 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
 
+        updateItemLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        int position= data.getIntExtra("position",0);
+                        String name = data.getStringExtra("name");
+                        BookItem bookItem=bookItems.get(position);
+                        bookItem.setName(name);
+                        bookItemsAdapter.notifyItemChanged(position);
+                    } else if (result.getResultCode() == Activity.RESULT_CANCELED) {
+
+                    }
+                }
+        );
 
     }
     ActivityResultLauncher<Intent> addItemLauncher;
+    ActivityResultLauncher<Intent>  updateItemLauncher;
 
     public boolean onContextItemSelected(MenuItem item){
 
@@ -70,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
             case 0:
                 Intent intent =new Intent(MainActivity.this,BookItemDetailsActivity.class);
                 addItemLauncher.launch(intent);
+                new DataBank().SaveBookItems(MainActivity.this, bookItems);
                 break;
             case 1:
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -88,9 +109,17 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
                 builder.create().show();
+                new DataBank().SaveBookItems(MainActivity.this, bookItems);
                 break;
 
             case 2:
+                Intent intentUpdate =new Intent(MainActivity.this,BookItemDetailsActivity.class);
+
+                BookItem bookItem= bookItems.get(item.getOrder());
+                intentUpdate.putExtra("name",bookItem.getName());
+                intentUpdate.putExtra("position",item.getOrder());
+                updateItemLauncher.launch(intentUpdate);
+                new DataBank().SaveBookItems(MainActivity.this, bookItems);
                 break;
 
             default:

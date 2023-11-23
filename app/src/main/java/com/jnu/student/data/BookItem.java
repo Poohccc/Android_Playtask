@@ -1,6 +1,8 @@
 package com.jnu.student.data;
 
-public class BookItem {
+import java.io.Serializable;
+
+public class BookItem  implements Serializable {
     private String name;
     private final int imageId;
 
