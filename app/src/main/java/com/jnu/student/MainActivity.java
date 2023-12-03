@@ -34,9 +34,10 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private String[] tabHeaderStrings = {"Book items", "baidu maps", "News"};
+    private String[] tabHeaderStrings = {"Book items","tengxun maps", "News"};//"baidu maps"
 
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main3);
 
@@ -71,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
                 case 0:
                     return new BookListFragment();
                 case 1:
-                    //return new BaiduMapFragment();
+                    return new BaiduMapFragment();
                 case 2:
                     return new WebViewFragment();
                 default:
@@ -84,4 +85,6 @@ public class MainActivity extends AppCompatActivity {
             return NUM_TABS;
         }
     }
+
+
 }
