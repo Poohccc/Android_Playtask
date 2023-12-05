@@ -77,6 +77,19 @@ public class DaytaskFragment extends Fragment {
         registerForContextMenu(recycle_view_tasks);
 
 
+        View btnAdd=rootView.findViewById(R.id.btn_add);
+        btnAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // 跳转到添加任务活动
+                Intent intent =new Intent(requireActivity(),BookItemDetailsActivity.class);
+                addItemLauncher.launch(intent);
+                new DataBank().SaveTaskItems(requireActivity(), taskItems);
+
+            }
+        });
+
+
         addItemLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -113,6 +126,24 @@ public class DaytaskFragment extends Fragment {
                 }
         );
 
+        updatePointLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        int position= data.getIntExtra("position",0);
+                        String name = data.getStringExtra("name");
+                        String pointText = data.getStringExtra("point");
+                        double point= Double.parseDouble(pointText);
+                        TaskItem taskItem = taskItems.get(position);
+                        taskItem.toggleCompleted();
+
+                        taskItemsAdapter.notifyItemChanged(position);
+                    } else if (result.getResultCode() == Activity.RESULT_CANCELED) {
+
+                    }
+                }
+        );
 
 
 
@@ -186,7 +217,7 @@ public class DaytaskFragment extends Fragment {
         public class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
             private final TextView textViewName;
             private final TextView pointViewItem;
-
+            private  CheckBox checkbox_task;
             public void  onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
                 menu.setHeaderTitle("具体操作");
                 menu.add(0, 0, this.getAdapterPosition(), "添加" + this.getAdapterPosition());
@@ -199,7 +230,7 @@ public class DaytaskFragment extends Fragment {
                 super(taskItemView);
                 textViewName = taskItemView.findViewById(R.id.text_view_task_title);
                 pointViewItem = taskItemView.findViewById(R.id.text_view_point);
-
+                checkbox_task=taskItemView.findViewById(R.id.checkbox_task);
                 taskItemView.setOnCreateContextMenuListener(this);
 
 
@@ -223,14 +254,14 @@ public class DaytaskFragment extends Fragment {
         public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
             //数据是否为空会显示不同布局
             //if (isEmpty) {
-               // View emptyView = LayoutInflater.from(viewGroup.getContext())
-                     //   .inflate(R.layout.empty_view, viewGroup, false);
-              //  return new ViewHolder(emptyView);
-           // }else{
-              //  View view = LayoutInflater.from(viewGroup.getContext())
-               //         .inflate(R.layout.activity_main2, viewGroup, false);
-               // return new ViewHolder(view);
-           // }
+            // View emptyView = LayoutInflater.from(viewGroup.getContext())
+            //   .inflate(R.layout.empty_view, viewGroup, false);
+            //  return new ViewHolder(emptyView);
+            // }else{
+            //  View view = LayoutInflater.from(viewGroup.getContext())
+            //         .inflate(R.layout.activity_main2, viewGroup, false);
+            // return new ViewHolder(view);
+            // }
             View view = LayoutInflater.from(viewGroup.getContext())
                     .inflate(R.layout.activity_main2, viewGroup, false);
 
@@ -250,7 +281,38 @@ public class DaytaskFragment extends Fragment {
 
             }
 
+            TaskItem taskItem = taskItems.get(position);
 
+            // 为每个任务项的CheckBox设置一个OnCheckedChangeListener，用来监听任务的勾选状态，并调用toggleCompleted方法来更新任务的完成状态。
+            viewHolder.checkbox_task.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    taskItem.toggleCompleted(); // 切换任务的完成状态
+                }
+            });
+
+            // 在TaskItemsAdapter类中，为每个任务项的TextView设置一个TextWatcher，用来监听任务的积分变化，并更新任务的积分属性。
+            viewHolder.pointViewItem.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    try {
+                        double point = Double.parseDouble(s.toString());
+                        taskItem.setAchievement_Points(point); // 更新任务的积分属性
+                    } catch (NumberFormatException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                }
+            });
 
 
         }
