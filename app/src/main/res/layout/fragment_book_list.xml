@@ -5,11 +5,43 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#2196F3"
+        android:gravity="center_vertical"
+        android:id="@+id/linear_layout1"
+        android:padding="10dp">
+
+        <!-- 应用名称的文本框 -->
+
+        <!-- 添加任务的按钮 -->
+        <TextView
+            android:layout_below="@id/text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PlayTask"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp" />
+
+        <Button
+            android:id="@+id/btn_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            app:layout_constraintTop_toTopOf="@+id/text"
+            android:layout_marginLeft="200dp"
+            android:background="@drawable/ic_add"
+            android:contentDescription="添加任务" />
+
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycle_view_books"
+        android:id="@+id/recycle_view_tasks"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/linear_layout1"
+        android:layout_marginTop="6dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

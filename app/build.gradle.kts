@@ -1,6 +1,8 @@
 plugins {
     id("com.android.application")
+    kotlin("android") version "1.8.10"
 }
+
 
 android {
     namespace = "com.jnu.student"
@@ -22,14 +24,21 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
-  //  compileOptions {
-   //   sourceCompatibility = JavaVersion.VERSION_1_80
-   //   targetCompatibility = JavaVersion.VERSION_1_8
-   // }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    buildFeatures {
+        dataBinding =true
+    }
+
+
 }
 
 dependencies {
-
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.10")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.9.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")

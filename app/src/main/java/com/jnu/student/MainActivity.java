@@ -1,6 +1,8 @@
 package com.jnu.student;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,7 +17,7 @@ import com.google.android.material.tabs.TabLayoutMediator;
 
 public class MainActivity extends AppCompatActivity {
 
-    private String[] tabHeaderStrings = {"Book items","tengxun maps", "News"};//"baidu maps"
+    private String[] tabHeaderStrings = {"每日任务","每周任务", "普通任务"};//,"副本任务"
 
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -35,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
         ).attach();
 
 
+
     }
 
 
@@ -51,11 +54,13 @@ public class MainActivity extends AppCompatActivity {
             // 根据位置返回对应的Fragment实例
             switch (position) {
                 case 0:
-                    return new BookListFragment();
+                    return new DaytaskFragment();
                 case 1:
-                    return new TencentMapFragment();
+                    return new WeektaskFragment();
                 case 2:
-                    return new WebViewFragment();
+                    return new NormaltaskFragment();
+                //case 3:
+                    //return new DaytaskFragment();
                 default:
                     return null;
             }

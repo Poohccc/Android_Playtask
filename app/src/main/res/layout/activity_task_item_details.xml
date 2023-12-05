@@ -25,10 +25,30 @@ tools:context=".BookItemDetailsActivity">
         android:layout_height="68dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Name"
+        android:text="任务"
         app:layout_constraintTop_toTopOf="@+id/textview_show_item_name"
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="170dp" />
+
+    <TextView
+        android:id="@+id/textview_show_item_point"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="160dp"
+        android:text="@string/string_item_point"
+        app:layout_constraintStart_toStartOf="@+id/textview_show_item_name"
+        app:layout_constraintTop_toTopOf="@+id/textview_show_item_name" />
+
+    <EditText
+        android:id="@+id/edittext_item_point"
+        android:layout_width="228dp"
+        android:layout_height="67dp"
+        android:ems="10"
+        android:text="0"
+        android:inputType="numberDecimal"
+        app:layout_constraintStart_toStartOf="@+id/edittext_item_name"
+        app:layout_constraintTop_toTopOf="@+id/textview_show_item_point" />
+
 
     <Button
         android:id="@+id/button_item_detailsOk"
@@ -42,6 +62,12 @@ tools:context=".BookItemDetailsActivity">
         app:layout_constraintStart_toStartOf="parent" />
 
 
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
 
 

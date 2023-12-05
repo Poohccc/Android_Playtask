@@ -3,8 +3,6 @@ package com.jnu.student;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,15 +13,15 @@ import android.webkit.WebViewClient;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link WebViewFragment#newInstance} factory method to
+ * Use the {@link NormaltaskFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class WebViewFragment extends Fragment {
+public class NormaltaskFragment extends Fragment {
 
 
 
 
-    public WebViewFragment() {
+    public NormaltaskFragment() {
         // Required empty public constructor
     }
 
@@ -36,8 +34,8 @@ public class WebViewFragment extends Fragment {
      * @return A new instance of fragment WebViewFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static WebViewFragment newInstance(String param1, String param2) {
-        WebViewFragment fragment = new WebViewFragment();
+    public static NormaltaskFragment newInstance(String param1, String param2) {
+        NormaltaskFragment fragment = new NormaltaskFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;

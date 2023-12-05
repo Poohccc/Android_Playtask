@@ -20,16 +20,16 @@ import com.tencent.tencentmap.mapsdk.maps.model.MarkerOptions;
 import java.util.ArrayList;
 
 
-public class TencentMapFragment extends Fragment {
+public class WeektaskFragment extends Fragment {
 
 
-    public TencentMapFragment() {
+    public WeektaskFragment() {
         // Required empty public constructor
     }
 
 
-    public static TencentMapFragment newInstance(String param1, String param2) {
-        TencentMapFragment fragment = new TencentMapFragment();
+    public static WeektaskFragment newInstance(String param1, String param2) {
+        WeektaskFragment fragment = new WeektaskFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;

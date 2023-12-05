@@ -7,35 +7,38 @@ import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.jnu.student.data.BookItem;
+import com.jnu.student.data.TaskItem;
 import com.jnu.student.data.DataBank;
 
 import java.util.ArrayList;
 
 
-public class BookListFragment extends Fragment {
+public class DaytaskFragment extends Fragment {
 
 
-    public BookListFragment() {
+    public DaytaskFragment() {
         // Required empty public constructor
     }
 
-    public static BookListFragment newInstance() {
-        BookListFragment fragment = new BookListFragment();
+    public static DaytaskFragment newInstance() {
+        DaytaskFragment fragment = new DaytaskFragment();
         Bundle args = new Bundle();
 
         fragment.setArguments(args);
@@ -49,31 +52,29 @@ public class BookListFragment extends Fragment {
 
         }
     }
-    private ArrayList<BookItem> bookItems = new ArrayList<>();
-    private BookItemsAdapter bookItemsAdapter;
+    private ArrayList<TaskItem> taskItems = new ArrayList<>();
+    private TaskItemsAdapter taskItemsAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-
         View rootView = inflater.inflate(R.layout.fragment_book_list, container, false);
 
         //获取RecyclerView控件
-        RecyclerView recycle_view_books = rootView.findViewById(R.id.recycle_view_books);
+        RecyclerView recycle_view_tasks = rootView.findViewById(R.id.recycle_view_tasks);
         //为线性布局
-        recycle_view_books.setLayoutManager(new LinearLayoutManager(requireActivity()));
-        bookItems = new DataBank().LoadBookItems(requireActivity());
-        if(bookItems.size()==0){
-            bookItems.add(new BookItem("软件项目管理案例教程（第4版）", R.drawable.book_2));
-            bookItems.add(new BookItem("创新工程实践", R.drawable.book_no_name));
+        recycle_view_tasks.setLayoutManager(new LinearLayoutManager(requireActivity()));
+        taskItems = new DataBank().LoadTaskItems(requireActivity());
+        if(taskItems.size()==0){
+            taskItems.add(new TaskItem("普通阅读30分钟", 10));
+            taskItems.add(new TaskItem("专业阅读30分钟", 15));
         }
 
 
-        bookItemsAdapter = new BookItemsAdapter(bookItems);
-        recycle_view_books.setAdapter(bookItemsAdapter);
+        taskItemsAdapter = new TaskItemsAdapter(taskItems);
+        recycle_view_tasks.setAdapter(taskItemsAdapter);
 
-        registerForContextMenu(recycle_view_books);
+        registerForContextMenu(recycle_view_tasks);
 
 
         addItemLauncher = registerForActivityResult(
@@ -82,8 +83,11 @@ public class BookListFragment extends Fragment {
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         Intent data = result.getData();
                         String name = data.getStringExtra("name");
-                        bookItems.add(new BookItem(name, R.drawable.book_2));
-                        bookItemsAdapter.notifyItemInserted(bookItems.size());
+                        String pointText = data.getStringExtra("point");
+                        double point=Double.parseDouble(pointText);
+                        taskItems.add(new TaskItem(name, point));
+
+                        taskItemsAdapter.notifyItemInserted(taskItems.size());
                     } else if (result.getResultCode() == Activity.RESULT_CANCELED) {
 
                     }
@@ -97,9 +101,12 @@ public class BookListFragment extends Fragment {
                         Intent data = result.getData();
                         int position= data.getIntExtra("position",0);
                         String name = data.getStringExtra("name");
-                        BookItem bookItem=bookItems.get(position);
-                        bookItem.setName(name);
-                        bookItemsAdapter.notifyItemChanged(position);
+                        String pointText = data.getStringExtra("point");
+                        double point= Double.parseDouble(pointText);
+                        TaskItem taskItem = taskItems.get(position);
+                        taskItem.setName(name);
+                        taskItem.setAchievement_Points(point);
+                        taskItemsAdapter.notifyItemChanged(position);
                     } else if (result.getResultCode() == Activity.RESULT_CANCELED) {
 
                     }
@@ -108,13 +115,17 @@ public class BookListFragment extends Fragment {
 
 
 
+
         return rootView;
     }
 
 
 
+
+
     ActivityResultLauncher<Intent> addItemLauncher;
     ActivityResultLauncher<Intent>  updateItemLauncher;
+    ActivityResultLauncher<Intent>  updatePointLauncher;
 
     public boolean onContextItemSelected(MenuItem item){
 
@@ -122,7 +133,7 @@ public class BookListFragment extends Fragment {
             case 0:
                 Intent intent =new Intent(requireActivity(),BookItemDetailsActivity.class);
                 addItemLauncher.launch(intent);
-                new DataBank().SaveBookItems(requireActivity(), bookItems);
+                new DataBank().SaveTaskItems(requireActivity(), taskItems);
                 break;
             case 1:
                 AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
@@ -131,8 +142,8 @@ public class BookListFragment extends Fragment {
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        bookItems.remove(item.getOrder());
-                        bookItemsAdapter.notifyItemRemoved(item.getOrder());
+                        taskItems.remove(item.getOrder());
+                        taskItemsAdapter.notifyItemRemoved(item.getOrder());
                     }
                 });
                 builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -141,17 +152,18 @@ public class BookListFragment extends Fragment {
                     }
                 });
                 builder.create().show();
-                new DataBank().SaveBookItems(requireActivity(), bookItems);
+                new DataBank().SaveTaskItems(requireActivity(), taskItems);
                 break;
 
             case 2:
                 Intent intentUpdate =new Intent(requireActivity(),BookItemDetailsActivity.class);
 
-                BookItem bookItem= bookItems.get(item.getOrder());
-                intentUpdate.putExtra("name",bookItem.getName());
+                TaskItem taskItem = taskItems.get(item.getOrder());
+                intentUpdate.putExtra("name", taskItem.getName());
+                intentUpdate.putExtra("point",taskItem.getAchievement_Points());
                 intentUpdate.putExtra("position",item.getOrder());
                 updateItemLauncher.launch(intentUpdate);
-                new DataBank().SaveBookItems(requireActivity(), bookItems);
+                new DataBank().SaveTaskItems(requireActivity(), taskItems);
                 break;
 
             default:
@@ -160,19 +172,20 @@ public class BookListFragment extends Fragment {
         return true;
     }
     //BookItemsAdapter.ViewHolder
-    public class BookItemsAdapter extends RecyclerView.Adapter<BookItemsAdapter.ViewHolder>{
+    public class TaskItemsAdapter extends RecyclerView.Adapter<TaskItemsAdapter.ViewHolder>{
 
-        private ArrayList<BookItem> bookItemsArrayList;
+        private ArrayList<TaskItem> taskItemsArrayList;
         private boolean isEmpty;
-        public BookItemsAdapter(ArrayList<BookItem> bookItems) {
-            bookItemsArrayList= bookItems;
-            isEmpty = bookItems.isEmpty();
+        public TaskItemsAdapter(ArrayList<TaskItem> taskItems) {
+            taskItemsArrayList = taskItems;
+            isEmpty = taskItems.isEmpty();
         }
+
 
 
         public class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
             private final TextView textViewName;
-            private final ImageView imageViewItem;
+            private final TextView pointViewItem;
 
             public void  onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
                 menu.setHeaderTitle("具体操作");
@@ -182,11 +195,12 @@ public class BookListFragment extends Fragment {
 
             }
 
-            public ViewHolder(View bookItemView) {
-                super(bookItemView);
-                textViewName = bookItemView.findViewById(R.id.text_view_book_title);
-                imageViewItem = bookItemView.findViewById(R.id.image_view_book_cover);
-                bookItemView.setOnCreateContextMenuListener(this);
+            public ViewHolder(View taskItemView) {
+                super(taskItemView);
+                textViewName = taskItemView.findViewById(R.id.text_view_task_title);
+                pointViewItem = taskItemView.findViewById(R.id.text_view_point);
+
+                taskItemView.setOnCreateContextMenuListener(this);
 
 
             }
@@ -195,9 +209,10 @@ public class BookListFragment extends Fragment {
                 return textViewName;
             }
 
-            public ImageView getImageViewItem() {
-                return imageViewItem;
+            public TextView getAchievement_PointsViewItem() {
+                return pointViewItem;
             }
+
 
         }
 
@@ -207,16 +222,19 @@ public class BookListFragment extends Fragment {
         }
         public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
             //数据是否为空会显示不同布局
-            if (isEmpty) {
-                View emptyView = LayoutInflater.from(viewGroup.getContext())
-                        .inflate(R.layout.empty_view, viewGroup, false);
-                return new ViewHolder(emptyView);
-            }else{
-                View view = LayoutInflater.from(viewGroup.getContext())
-                        .inflate(R.layout.activity_main2, viewGroup, false);
-                return new ViewHolder(view);
-            }
+            //if (isEmpty) {
+               // View emptyView = LayoutInflater.from(viewGroup.getContext())
+                     //   .inflate(R.layout.empty_view, viewGroup, false);
+              //  return new ViewHolder(emptyView);
+           // }else{
+              //  View view = LayoutInflater.from(viewGroup.getContext())
+               //         .inflate(R.layout.activity_main2, viewGroup, false);
+               // return new ViewHolder(view);
+           // }
+            View view = LayoutInflater.from(viewGroup.getContext())
+                    .inflate(R.layout.activity_main2, viewGroup, false);
 
+            return new ViewHolder(view);
 
         }
 
@@ -227,15 +245,19 @@ public class BookListFragment extends Fragment {
 
         public void onBindViewHolder(ViewHolder viewHolder, final int position) {
             if (!isEmpty){
-                viewHolder.getTextViewName().setText((bookItemsArrayList.get(position).getName()));
-                viewHolder.getImageViewItem().setImageResource((bookItemsArrayList.get(position).getImageId()));
+                viewHolder.getTextViewName().setText((taskItemsArrayList.get(position).getName()));
+                viewHolder.getAchievement_PointsViewItem().setText((taskItemsArrayList.get(position).getAchievement_Points()+ ""));
+
             }
+
+
+
 
         }
 
 
         public int getItemCount() {
-            return isEmpty ? 1 :bookItemsArrayList.size();
+            return isEmpty ? 1 : taskItemsArrayList.size();
         }
     }
 
