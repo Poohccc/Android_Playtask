@@ -184,6 +184,7 @@ public class DaytaskFragment extends Fragment {
                         totalPoints -= taskItem.getAchievement_Points();
                         textViewTotalPoints.setText("Total points: " + totalPoints); // 更新TextView控件的文本
                         taskItems.remove(item.getOrder());
+
                         taskItemsAdapter.notifyItemRemoved(item.getOrder());
                     }
                 });
