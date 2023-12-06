@@ -31,7 +31,13 @@
             android:layout_gravity="right"
             app:layout_constraintTop_toTopOf="@+id/text_view_total_points"
             android:layout_marginLeft="200dp"
-            android:background="@drawable/ic_add"
+            android:text="+"
+            android:textSize="20sp"
+            android:textColor="#FFFFFF"
+
+            android:fontFamily="monospace"
+            android:scaleType="centerCrop"
+
             android:contentDescription="添加任务" />
 
     </LinearLayout>
