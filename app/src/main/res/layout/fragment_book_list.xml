@@ -14,22 +14,22 @@
         android:padding="10dp">
 
         <!-- 应用名称的文本框 -->
-
-        <!-- 添加任务的按钮 -->
         <TextView
-            android:layout_below="@id/text"
+            android:id="@+id/text_view_total_points"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="PlayTask"
+            android:text="Total points: 0"
+
+
             android:textColor="#FFFFFF"
             android:textSize="24sp" />
-
+        <!-- 添加任务的按钮 -->
         <Button
             android:id="@+id/btn_add"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            app:layout_constraintTop_toTopOf="@+id/text"
+            app:layout_constraintTop_toTopOf="@+id/text_view_total_points"
             android:layout_marginLeft="200dp"
             android:background="@drawable/ic_add"
             android:contentDescription="添加任务" />

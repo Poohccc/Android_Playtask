@@ -36,6 +36,7 @@ public class TaskItem implements Serializable {
         completed = !completed;
         if (completed) {
             //增加积分的逻辑
+
         } else {
             //减少积分的逻辑
         }

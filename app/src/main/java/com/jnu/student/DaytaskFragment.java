@@ -55,6 +55,10 @@ public class DaytaskFragment extends Fragment {
     private ArrayList<TaskItem> taskItems = new ArrayList<>();
     private TaskItemsAdapter taskItemsAdapter;
 
+    private TextView textViewTotalPoints;// 用来显示总的积分
+
+    private double totalPoints; // 新增的属性，用来记录总的积分
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -64,6 +68,9 @@ public class DaytaskFragment extends Fragment {
         RecyclerView recycle_view_tasks = rootView.findViewById(R.id.recycle_view_tasks);
         //为线性布局
         recycle_view_tasks.setLayoutManager(new LinearLayoutManager(requireActivity()));
+        // 获取TextView控件的引用
+        textViewTotalPoints = rootView.findViewById(R.id.text_view_total_points);
+        totalPoints = 0; // 初始化为0
         taskItems = new DataBank().LoadTaskItems(requireActivity());
         if(taskItems.size()==0){
             taskItems.add(new TaskItem("普通阅读30分钟", 10));
@@ -173,6 +180,9 @@ public class DaytaskFragment extends Fragment {
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        TaskItem taskItem = taskItems.get(item.getOrder()); // 根据position获取要删除的任务
+                        totalPoints -= taskItem.getAchievement_Points();
+                        textViewTotalPoints.setText("Total points: " + totalPoints); // 更新TextView控件的文本
                         taskItems.remove(item.getOrder());
                         taskItemsAdapter.notifyItemRemoved(item.getOrder());
                     }
@@ -206,9 +216,15 @@ public class DaytaskFragment extends Fragment {
     public class TaskItemsAdapter extends RecyclerView.Adapter<TaskItemsAdapter.ViewHolder>{
 
         private ArrayList<TaskItem> taskItemsArrayList;
+
+
         private boolean isEmpty;
+
+
+
         public TaskItemsAdapter(ArrayList<TaskItem> taskItems) {
             taskItemsArrayList = taskItems;
+
             isEmpty = taskItems.isEmpty();
         }
 
@@ -287,8 +303,17 @@ public class DaytaskFragment extends Fragment {
             viewHolder.checkbox_task.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    taskItem.toggleCompleted(); // 切换任务的完成状态
+                    taskItem.setCompleted(isChecked); // 切换任务的完成状态
+                    if (isChecked) {
+                        totalPoints += taskItem.getAchievement_Points(); // 如果任务完成，增加积分
+                    } else {
+                        totalPoints -= taskItem.getAchievement_Points(); // 如果任务取消，减少积分
+                    }
+                    // 在这里可以显示或更新总的积分，例如使用一个TextView来显示
+                    textViewTotalPoints.setText("Total points: " + totalPoints);
                 }
+
+
             });
 
             // 在TaskItemsAdapter类中，为每个任务项的TextView设置一个TextWatcher，用来监听任务的积分变化，并更新任务的积分属性。
@@ -302,7 +327,9 @@ public class DaytaskFragment extends Fragment {
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                     try {
                         double point = Double.parseDouble(s.toString());
+                        totalPoints -= taskItem.getAchievement_Points();
                         taskItem.setAchievement_Points(point); // 更新任务的积分属性
+                        totalPoints += taskItem.getAchievement_Points();
                     } catch (NumberFormatException e) {
                         e.printStackTrace();
                     }
@@ -310,7 +337,7 @@ public class DaytaskFragment extends Fragment {
 
                 @Override
                 public void afterTextChanged(Editable s) {
-
+                    textViewTotalPoints.setText("Total points: " + totalPoints);
                 }
             });
 
