@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">卖书的app</string>
+    <string name="app_name">PlayTask</string>
     <string name="Hello_World">Hello World</string>
     <string name="click_me_button">click_me</string>
     <string name="change_text">change text</string>

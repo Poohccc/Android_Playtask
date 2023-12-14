@@ -1,11 +1,11 @@
 package com.jnu.student;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
@@ -15,29 +15,31 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MaintaskFragment extends Fragment {
 
-    private String[] tabHeaderStrings = {"任务","奖励", "统计"};//,"副本任务"
+    private String[] tabHeaderStrings = {"每日任务","每周任务", "普通任务"};//,"副本任务"
 
-    protected void onCreate(Bundle savedInstanceState) {
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.activity_main3, container, false);
+    }
 
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
+    @Override
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        ViewPager2 viewPager = findViewById(R.id.view_pager);
-        TabLayout tabLayout = findViewById(R.id.tab_layout);
+        ViewPager2 viewPager = view.findViewById(R.id.view_pager);
+        TabLayout tabLayout = view.findViewById(R.id.tab_layout);
 
         // 创建适配器
-        FragmentAdapter fragmentAdapter = new FragmentAdapter(getSupportFragmentManager(), getLifecycle());
+        FragmentAdapter fragmentAdapter = new FragmentAdapter(getChildFragmentManager(), getLifecycle());
         viewPager.setAdapter(fragmentAdapter);
 
         // 将TabLayout和ViewPager2进行关联
         new TabLayoutMediator(tabLayout, viewPager,
                 (tab, position) -> tab.setText(tabHeaderStrings[position])
         ).attach();
-
-
-
     }
 
 
@@ -54,12 +56,13 @@ public class MainActivity extends AppCompatActivity {
             // 根据位置返回对应的Fragment实例
             switch (position) {
                 case 0:
-                    return new MaintaskFragment();
+                    return new DaytaskFragment();
                 case 1:
                     return new WeektaskFragment();
                 case 2:
                     return new NormaltaskFragment();
-
+                //case 3:
+                //return new DaytaskFragment();
                 default:
                     return null;
             }
