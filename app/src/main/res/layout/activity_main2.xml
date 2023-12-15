@@ -14,13 +14,12 @@
         android:layout_height="wrap_content">
 
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
             android:padding="16dp"
+            android:gravity="center_vertical"
             tools:ignore="MissingConstraints">
-
 
             <CheckBox
                 android:id="@+id/checkbox_task"
@@ -29,24 +28,38 @@
                 android:checked="@{taskItem.completed}" />
 
             <TextView
+                android:id="@+id/text_view_point"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp"
+                android:text="0"
+                android:textColor="#0000FF"
+                android:textSize="18sp" />
+
+            <TextView
                 android:id="@+id/text_view_task_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
                 android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_toLeftOf="@id/text_view_point"
+                android:layout_toRightOf="@id/checkbox_task"
+                android:gravity="center_vertical"
                 android:scaleType="centerCrop"
                 android:text="@string/string_item_name"
                 android:textColor="#000"
                 android:textSize="18sp" />
 
-            <TextView
-                android:id="@+id/text_view_point"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="260dp"
-                android:text="@string/string_item_price"
-                android:textColor="#000"
-                android:textSize="18sp" />
-        </LinearLayout>
+        </RelativeLayout>
+
+
+
+
     </FrameLayout>
 </layout>
 

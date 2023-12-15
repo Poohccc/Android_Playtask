@@ -58,7 +58,7 @@ public class MaintaskFragment extends Fragment {
                 case 0:
                     return new DaytaskFragment();
                 case 1:
-                    return new WeektaskFragment();
+                    return new mapFragment();
                 case 2:
                     return new NormaltaskFragment();
                 //case 3:

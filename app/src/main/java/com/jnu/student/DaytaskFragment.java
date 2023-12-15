@@ -218,17 +218,13 @@ public class DaytaskFragment extends Fragment {
 
         private ArrayList<TaskItem> taskItemsArrayList;
 
-
         private boolean isEmpty;
-
-
 
         public TaskItemsAdapter(ArrayList<TaskItem> taskItems) {
             taskItemsArrayList = taskItems;
 
             isEmpty = taskItems.isEmpty();
         }
-
 
 
         public class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {

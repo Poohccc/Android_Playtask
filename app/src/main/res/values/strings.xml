@@ -8,7 +8,7 @@
     <string name="change">交换成功</string>
     <string name="hello_android">你好Android</string>
     <string name="string_item_name">name</string>
-    <string name="string_item_price">0</string>
+    <string name="string_item_price">"+%d"</string>
     <string name="string_item_point">point</string>
 
 
