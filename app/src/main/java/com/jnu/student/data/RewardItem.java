@@ -39,6 +39,7 @@ public class RewardItem implements Serializable {
     }
 
     public void setCompleted(boolean completed) {
+
         this.completed = completed;
     }
 

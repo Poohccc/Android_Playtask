@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:app="http://schemas.android.com/apk/res-auto"
-xmlns:tools="http://schemas.android.com/tools"
-android:layout_width="match_parent"
-android:layout_height="match_parent"
-tools:context=".task.BookItemDetailsActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".task.BookItemDetailsActivity">
 
 
     <TextView
@@ -25,10 +25,10 @@ tools:context=".task.BookItemDetailsActivity">
         android:layout_height="68dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="任务"
+        android:text="奖励"
         app:layout_constraintTop_toTopOf="@+id/textview_show_item_name"
         tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="187dp" />
+        tools:layout_editor_absoluteX="170dp" />
 
     <TextView
         android:id="@+id/textview_show_item_point"
