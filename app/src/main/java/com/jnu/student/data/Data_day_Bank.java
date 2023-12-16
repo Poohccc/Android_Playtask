@@ -10,15 +10,15 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
-public class DataBank {
-    final String DATA_FILENAME = "taskitems.data";
+public class Data_day_Bank {
+    final String DATA_FILENAME = "day_taskitems.data";
 
-    public ArrayList<TaskItem> LoadTaskItems(Context context) {
-        ArrayList<TaskItem> data = new ArrayList<>();
+    public ArrayList<DayTaskItem> LoadTaskItems(Context context) {
+        ArrayList<DayTaskItem> data = new ArrayList<>();
         try {
             FileInputStream fileIn = context.openFileInput(DATA_FILENAME);
             ObjectInputStream objectIn = new ObjectInputStream(fileIn);
-            data = (ArrayList<TaskItem>) objectIn.readObject();
+            data = (ArrayList<DayTaskItem>) objectIn.readObject();
             objectIn.close();
             fileIn.close();
             Log.d("Serialization", "Data loaded successfully.item count" + data.size());
@@ -28,12 +28,12 @@ public class DataBank {
         return data;
     }
 
-    public void SaveTaskItems(Context context, ArrayList<TaskItem> taskItems) {
+    public void SaveTaskItems(Context context, ArrayList<DayTaskItem> dayTaskItems) {
 
         try {
             FileOutputStream fileOut = context.openFileOutput(DATA_FILENAME, Context.MODE_PRIVATE);
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            out.writeObject(taskItems);
+            out.writeObject(dayTaskItems);
             out.close();
             fileOut.close();
             Log.d("Serialization", "Data is serialized and saved.");

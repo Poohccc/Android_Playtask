@@ -13,15 +13,15 @@ import android.webkit.WebViewClient;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link NormaltaskFragment#newInstance} factory method to
+ * Use the {@link webFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class NormaltaskFragment extends Fragment {
+public class webFragment extends Fragment {
 
 
 
 
-    public NormaltaskFragment() {
+    public webFragment() {
         // Required empty public constructor
     }
 
@@ -34,8 +34,8 @@ public class NormaltaskFragment extends Fragment {
      * @return A new instance of fragment WebViewFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static NormaltaskFragment newInstance(String param1, String param2) {
-        NormaltaskFragment fragment = new NormaltaskFragment();
+    public static webFragment newInstance(String param1, String param2) {
+        webFragment fragment = new webFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;

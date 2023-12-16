@@ -6,8 +6,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <variable
-            name="taskItem"
-            type="com.jnu.student.data.TaskItem" />
+            name="dayTaskItem"
+            type="com.jnu.student.data.DayTaskItem" />
     </data>
     <FrameLayout
         android:layout_width="match_parent"
@@ -21,11 +21,13 @@
             android:gravity="center_vertical"
             tools:ignore="MissingConstraints">
 
+
+
             <CheckBox
-                android:id="@+id/checkbox_task"
+                android:id="@+id/switch_task"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="@{taskItem.completed}" />
+                android:checked="@{dayTaskItem.completed}" />
 
             <TextView
                 android:id="@+id/text_view_point"
@@ -48,7 +50,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_toLeftOf="@id/text_view_point"
-                android:layout_toRightOf="@id/checkbox_task"
+                android:layout_toRightOf="@id/switch_task"
                 android:gravity="center_vertical"
                 android:scaleType="centerCrop"
                 android:text="@string/string_item_name"

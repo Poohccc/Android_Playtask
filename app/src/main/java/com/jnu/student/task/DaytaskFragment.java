@@ -1,4 +1,4 @@
-package com.jnu.student;
+package com.jnu.student.task;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -9,6 +9,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,11 +22,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.jnu.student.data.TaskItem;
-import com.jnu.student.data.DataBank;
+import com.jnu.student.R;
+import com.jnu.student.data.DayTaskItem;
+import com.jnu.student.data.PointsViewModel;
+import com.jnu.student.data.Data_day_Bank;
+import com.jnu.student.main.MaintaskFragment;
 
 import java.util.ArrayList;
 
@@ -52,12 +55,15 @@ public class DaytaskFragment extends Fragment {
 
         }
     }
-    private ArrayList<TaskItem> taskItems = new ArrayList<>();
+    private ArrayList<DayTaskItem> dayTaskItems = new ArrayList<>();
     private TaskItemsAdapter taskItemsAdapter;
 
     private TextView textViewTotalPoints;// 用来显示总的积分
 
     private double totalPoints; // 新增的属性，用来记录总的积分
+
+    // 声明一个PointsViewModel的变量
+    private PointsViewModel pointsViewModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -71,14 +77,14 @@ public class DaytaskFragment extends Fragment {
         // 获取TextView控件的引用
         textViewTotalPoints = rootView.findViewById(R.id.text_view_total_points);
         totalPoints = 0; // 初始化为0
-        taskItems = new DataBank().LoadTaskItems(requireActivity());
-        if(taskItems.size()==0){
-            taskItems.add(new TaskItem("普通阅读30分钟", 10));
-            taskItems.add(new TaskItem("专业阅读30分钟", 15));
+        dayTaskItems = new Data_day_Bank().LoadTaskItems(requireActivity());
+        if(dayTaskItems.size()==0){
+            dayTaskItems.add(new DayTaskItem("普通阅读30分钟", 10));
+            dayTaskItems.add(new DayTaskItem("专业阅读30分钟", 15));
         }
 
 
-        taskItemsAdapter = new TaskItemsAdapter(taskItems);
+        taskItemsAdapter = new TaskItemsAdapter(dayTaskItems);
         recycle_view_tasks.setAdapter(taskItemsAdapter);
 
         registerForContextMenu(recycle_view_tasks);
@@ -89,10 +95,21 @@ public class DaytaskFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // 跳转到添加任务活动
-                Intent intent =new Intent(requireActivity(),BookItemDetailsActivity.class);
+                Intent intent =new Intent(requireActivity(), BookItemDetailsActivity.class);
                 addItemLauncher.launch(intent);
-                new DataBank().SaveTaskItems(requireActivity(), taskItems);
+                new Data_day_Bank().SaveTaskItems(requireActivity(), dayTaskItems);
 
+            }
+        });
+
+
+        // 从MaintaskFragment中获取PointsViewModel的实例
+        pointsViewModel = ((MaintaskFragment) getParentFragment()).getPointsViewModel();
+
+        // 观察totalPoints的变化，更新textViewTotalPoints的显示
+        pointsViewModel.getTotalPoints().observe(getViewLifecycleOwner(), new Observer<Double>() {
+            public void onChanged(Double points) {
+                textViewTotalPoints.setText("Total points: " + points);
             }
         });
 
@@ -105,9 +122,9 @@ public class DaytaskFragment extends Fragment {
                         String name = data.getStringExtra("name");
                         String pointText = data.getStringExtra("point");
                         double point=Double.parseDouble(pointText);
-                        taskItems.add(new TaskItem(name, point));
+                        dayTaskItems.add(new DayTaskItem(name, point));
 
-                        taskItemsAdapter.notifyItemInserted(taskItems.size());
+                        taskItemsAdapter.notifyItemInserted(dayTaskItems.size());
                     } else if (result.getResultCode() == Activity.RESULT_CANCELED) {
 
                     }
@@ -123,43 +140,19 @@ public class DaytaskFragment extends Fragment {
                         String name = data.getStringExtra("name");
                         String pointText = data.getStringExtra("point");
                         double point= Double.parseDouble(pointText);
-                        TaskItem taskItem = taskItems.get(position);
-                        taskItem.setName(name);
-                        taskItem.setAchievement_Points(point);
+                        DayTaskItem dayTaskItem = dayTaskItems.get(position);
+                        dayTaskItem.setName(name);
+                        dayTaskItem.setAchievement_Points(point);
                         taskItemsAdapter.notifyItemChanged(position);
                     } else if (result.getResultCode() == Activity.RESULT_CANCELED) {
 
                     }
                 }
         );
-
-        updatePointLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == Activity.RESULT_OK) {
-                        Intent data = result.getData();
-                        int position= data.getIntExtra("position",0);
-                        String name = data.getStringExtra("name");
-                        String pointText = data.getStringExtra("point");
-                        double point= Double.parseDouble(pointText);
-                        TaskItem taskItem = taskItems.get(position);
-                        taskItem.toggleCompleted();
-
-                        taskItemsAdapter.notifyItemChanged(position);
-                    } else if (result.getResultCode() == Activity.RESULT_CANCELED) {
-
-                    }
-                }
-        );
-
 
 
         return rootView;
     }
-
-
-
-
 
     ActivityResultLauncher<Intent> addItemLauncher;
     ActivityResultLauncher<Intent>  updateItemLauncher;
@@ -171,7 +164,7 @@ public class DaytaskFragment extends Fragment {
             case 0:
                 Intent intent =new Intent(requireActivity(),BookItemDetailsActivity.class);
                 addItemLauncher.launch(intent);
-                new DataBank().SaveTaskItems(requireActivity(), taskItems);
+                new Data_day_Bank().SaveTaskItems(requireActivity(), dayTaskItems);
                 break;
             case 1:
                 AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
@@ -180,10 +173,12 @@ public class DaytaskFragment extends Fragment {
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        TaskItem taskItem = taskItems.get(item.getOrder()); // 根据position获取要删除的任务
-                        totalPoints -= taskItem.getAchievement_Points();
+                        DayTaskItem dayTaskItem = dayTaskItems.get(item.getOrder()); // 根据position获取要删除的任务
+                        totalPoints -= dayTaskItem.getAchievement_Points();
+                        pointsViewModel.subtractPoints(dayTaskItem.getAchievement_Points());
+                        totalPoints= pointsViewModel.getTotalPoints().getValue();
                         textViewTotalPoints.setText("Total points: " + totalPoints); // 更新TextView控件的文本
-                        taskItems.remove(item.getOrder());
+                        dayTaskItems.remove(item.getOrder());
 
                         taskItemsAdapter.notifyItemRemoved(item.getOrder());
                     }
@@ -194,18 +189,18 @@ public class DaytaskFragment extends Fragment {
                     }
                 });
                 builder.create().show();
-                new DataBank().SaveTaskItems(requireActivity(), taskItems);
+                new Data_day_Bank().SaveTaskItems(requireActivity(), dayTaskItems);
                 break;
 
             case 2:
                 Intent intentUpdate =new Intent(requireActivity(),BookItemDetailsActivity.class);
 
-                TaskItem taskItem = taskItems.get(item.getOrder());
-                intentUpdate.putExtra("name", taskItem.getName());
-                intentUpdate.putExtra("point",taskItem.getAchievement_Points());
+                DayTaskItem dayTaskItem = dayTaskItems.get(item.getOrder());
+                intentUpdate.putExtra("name", dayTaskItem.getName());
+                intentUpdate.putExtra("point", dayTaskItem.getAchievement_Points());
                 intentUpdate.putExtra("position",item.getOrder());
                 updateItemLauncher.launch(intentUpdate);
-                new DataBank().SaveTaskItems(requireActivity(), taskItems);
+                new Data_day_Bank().SaveTaskItems(requireActivity(), dayTaskItems);
                 break;
 
             default:
@@ -216,14 +211,14 @@ public class DaytaskFragment extends Fragment {
     //BookItemsAdapter.ViewHolder
     public class TaskItemsAdapter extends RecyclerView.Adapter<TaskItemsAdapter.ViewHolder>{
 
-        private ArrayList<TaskItem> taskItemsArrayList;
+        private ArrayList<DayTaskItem> dayTaskItemsArrayList;
 
         private boolean isEmpty;
 
-        public TaskItemsAdapter(ArrayList<TaskItem> taskItems) {
-            taskItemsArrayList = taskItems;
+        public TaskItemsAdapter(ArrayList<DayTaskItem> dayTaskItems) {
+            dayTaskItemsArrayList = dayTaskItems;
 
-            isEmpty = taskItems.isEmpty();
+            isEmpty = dayTaskItems.isEmpty();
         }
 
 
@@ -243,10 +238,8 @@ public class DaytaskFragment extends Fragment {
                 super(taskItemView);
                 textViewName = taskItemView.findViewById(R.id.text_view_task_title);
                 pointViewItem = taskItemView.findViewById(R.id.text_view_point);
-                checkbox_task=taskItemView.findViewById(R.id.checkbox_task);
+                checkbox_task=taskItemView.findViewById(R.id.switch_task);
                 taskItemView.setOnCreateContextMenuListener(this);
-
-
             }
 
             public TextView getTextViewName() {
@@ -265,53 +258,44 @@ public class DaytaskFragment extends Fragment {
             return isEmpty ? 0 : 1;
         }
         public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-            //数据是否为空会显示不同布局
-            //if (isEmpty) {
-            // View emptyView = LayoutInflater.from(viewGroup.getContext())
-            //   .inflate(R.layout.empty_view, viewGroup, false);
-            //  return new ViewHolder(emptyView);
-            // }else{
-            //  View view = LayoutInflater.from(viewGroup.getContext())
-            //         .inflate(R.layout.activity_main2, viewGroup, false);
-            // return new ViewHolder(view);
-            // }
             View view = LayoutInflater.from(viewGroup.getContext())
-                    .inflate(R.layout.activity_main2, viewGroup, false);
+                    .inflate(R.layout.daytask, viewGroup, false);
 
             return new ViewHolder(view);
 
         }
 
-
-
         @Override
-
-
         public void onBindViewHolder(ViewHolder viewHolder, final int position) {
             if (!isEmpty){
-                viewHolder.getTextViewName().setText((taskItemsArrayList.get(position).getName()));
-                viewHolder.getAchievement_PointsViewItem().setText((taskItemsArrayList.get(position).getAchievement_Points()+ ""));
+                viewHolder.getTextViewName().setText((dayTaskItemsArrayList.get(position).getName()));
+                viewHolder.getAchievement_PointsViewItem().setText((dayTaskItemsArrayList.get(position).getAchievement_Points()+ ""));
 
             }
 
-            TaskItem taskItem = taskItems.get(position);
+            DayTaskItem dayTaskItem = dayTaskItems.get(position);
 
             // 为每个任务项的CheckBox设置一个OnCheckedChangeListener，用来监听任务的勾选状态，并调用toggleCompleted方法来更新任务的完成状态。
             viewHolder.checkbox_task.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    taskItem.setCompleted(isChecked); // 切换任务的完成状态
+                    dayTaskItem.setCompleted(isChecked); // 切换任务的完成状态
                     if (isChecked) {
-                        totalPoints += taskItem.getAchievement_Points(); // 如果任务完成，增加积分
+                        totalPoints += dayTaskItem.getAchievement_Points(); // 如果任务完成，增加积分
+                        pointsViewModel.addPoints(dayTaskItem.getAchievement_Points());
                     } else {
-                        totalPoints -= taskItem.getAchievement_Points(); // 如果任务取消，减少积分
+                        totalPoints -= dayTaskItem.getAchievement_Points(); // 如果任务取消，减少积分
+                        pointsViewModel.subtractPoints(dayTaskItem.getAchievement_Points());
                     }
                     // 在这里可以显示或更新总的积分，例如使用一个TextView来显示
+                    totalPoints= pointsViewModel.getTotalPoints().getValue();
                     textViewTotalPoints.setText("Total points: " + totalPoints);
+
                 }
 
-
             });
+
+
 
             // 在TaskItemsAdapter类中，为每个任务项的TextView设置一个TextWatcher，用来监听任务的积分变化，并更新任务的积分属性。
             viewHolder.pointViewItem.addTextChangedListener(new TextWatcher() {
@@ -324,9 +308,9 @@ public class DaytaskFragment extends Fragment {
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                     try {
                         double point = Double.parseDouble(s.toString());
-                        totalPoints -= taskItem.getAchievement_Points();
-                        taskItem.setAchievement_Points(point); // 更新任务的积分属性
-                        totalPoints += taskItem.getAchievement_Points();
+                        totalPoints -= dayTaskItem.getAchievement_Points();
+                        dayTaskItem.setAchievement_Points(point); // 更新任务的积分属性
+                        totalPoints += dayTaskItem.getAchievement_Points();
                     } catch (NumberFormatException e) {
                         e.printStackTrace();
                     }
@@ -334,16 +318,15 @@ public class DaytaskFragment extends Fragment {
 
                 @Override
                 public void afterTextChanged(Editable s) {
+                    totalPoints= pointsViewModel.getTotalPoints().getValue();
                     textViewTotalPoints.setText("Total points: " + totalPoints);
                 }
             });
 
-
         }
 
-
         public int getItemCount() {
-            return isEmpty ? 1 : taskItemsArrayList.size();
+            return isEmpty ? 1 : dayTaskItemsArrayList.size();
         }
     }
 
