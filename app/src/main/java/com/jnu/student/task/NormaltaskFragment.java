@@ -164,65 +164,51 @@ public class NormaltaskFragment extends Fragment {
 
 
         switch(item.getItemId()){
-            case 0: // DaytaskFragment的添加菜单项
-                // 省略
+
+            case 6:
+                Intent intent =new Intent(requireActivity(),BookItemDetailsActivity.class);
+                addItemLauncher.launch(intent);
+                new Data_normal_Bank().SaveTaskItems(requireActivity(), norTaskItems);
                 break;
-            case 1: // DaytaskFragment的删除菜单项
-                // 省略
-                break;
-            case 2: // DaytaskFragment的修改菜单项
-                // 省略
+            case 7:
+                AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+                builder.setTitle("Delete Data");
+                builder.setMessage("Are you sure you want to delete this data?");
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        NorTaskItem dayTaskItem = norTaskItems.get(item.getOrder()); // 根据position获取要删除的任务
+                        totalPoints -= dayTaskItem.getAchievement_Points();
+                        pointsViewModel.subtractPoints(dayTaskItem.getAchievement_Points());
+                        totalPoints= pointsViewModel.getTotalPoints().getValue();
+                        textViewTotalPoints.setText("Total points: " + totalPoints); // 更新TextView控件的文本
+                        norTaskItems.remove(item.getOrder());
+
+                        taskItemsAdapter.notifyItemRemoved(item.getOrder());
+                    }
+                });
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+                builder.create().show();
+                new Data_normal_Bank().SaveTaskItems(requireActivity(), norTaskItems);
                 break;
 
-            default: // RewardFragment的菜单项
-                switch(item.getGroupId()){
-                    case 2: // RewardFragment的菜单项
-                        switch(item.getItemId()){
-                            case 6:
-                                Intent intent =new Intent(requireActivity(),BookItemDetailsActivity.class);
-                                addItemLauncher.launch(intent);
-                                new Data_normal_Bank().SaveTaskItems(requireActivity(), norTaskItems);
-                                break;
-                            case 7:
-                                AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
-                                builder.setTitle("Delete Data");
-                                builder.setMessage("Are you sure you want to delete this data?");
-                                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        NorTaskItem dayTaskItem = norTaskItems.get(item.getOrder()); // 根据position获取要删除的任务
-                                        totalPoints -= dayTaskItem.getAchievement_Points();
-                                        pointsViewModel.subtractPoints(dayTaskItem.getAchievement_Points());
-                                        totalPoints= pointsViewModel.getTotalPoints().getValue();
-                                        textViewTotalPoints.setText("Total points: " + totalPoints); // 更新TextView控件的文本
-                                        norTaskItems.remove(item.getOrder());
+            case 8:
+                Intent intentUpdate =new Intent(requireActivity(), BookItemDetailsActivity.class);
 
-                                        taskItemsAdapter.notifyItemRemoved(item.getOrder());
-                                    }
-                                });
-                                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                    }
-                                });
-                                builder.create().show();
-                                new Data_normal_Bank().SaveTaskItems(requireActivity(), norTaskItems);
-                                break;
-
-                            case 8:
-                                Intent intentUpdate =new Intent(requireActivity(), BookItemDetailsActivity.class);
-
-                                NorTaskItem dayTaskItem = norTaskItems.get(item.getOrder());
-                                intentUpdate.putExtra("name", dayTaskItem.getName());
-                                intentUpdate.putExtra("point", dayTaskItem.getAchievement_Points());
-                                intentUpdate.putExtra("position",item.getOrder());
-                                updateItemLauncher.launch(intentUpdate);
-                                new Data_normal_Bank().SaveTaskItems(requireActivity(), norTaskItems);
-                                break;
-                        }
-                        break;
-                }
+                NorTaskItem dayTaskItem = norTaskItems.get(item.getOrder());
+                intentUpdate.putExtra("name", dayTaskItem.getName());
+                intentUpdate.putExtra("point", dayTaskItem.getAchievement_Points());
+                intentUpdate.putExtra("position",item.getOrder());
+                updateItemLauncher.launch(intentUpdate);
+                new Data_normal_Bank().SaveTaskItems(requireActivity(), norTaskItems);
                 break;
+
+            default:
+                return super.onContextItemSelected(item);
         }
         return true;
 
@@ -250,9 +236,9 @@ public class NormaltaskFragment extends Fragment {
             private  CheckBox checkbox_task;
             public void  onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
                 menu.setHeaderTitle("具体操作");
-                menu.add(2, 6, this.getAdapterPosition(), "添加" + this.getAdapterPosition());
-                menu.add(2, 7, this.getAdapterPosition(), "删除" + this.getAdapterPosition());
-                menu.add(2, 8, this.getAdapterPosition(), "修改" + this.getAdapterPosition());
+                menu.add(0, 6, this.getAdapterPosition(), "添加" + this.getAdapterPosition());
+                menu.add(0, 7, this.getAdapterPosition(), "删除" + this.getAdapterPosition());
+                menu.add(0, 8, this.getAdapterPosition(), "修改" + this.getAdapterPosition());
 
             }
 
