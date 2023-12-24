@@ -24,6 +24,8 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.jnu.student.data.RewardItem;
 import com.jnu.student.data.PointsViewModel;
 import com.jnu.student.data.Data_reward_Bank;
@@ -102,6 +104,22 @@ public class RewardFragment extends Fragment {
             }
         });
 
+        //找到FAB的id
+        FloatingActionButton fab = rootView.findViewById(R.id.fab);
+//为FAB设置点击监听器
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //当用户点击FAB时，显示一个Snackbar消息
+                Snackbar.make(view, "添加了一个奖励", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+                Intent intent =new Intent(requireActivity(), BookItemDetailsActivity.class);
+                addItemLauncher.launch(intent);
+                new Data_reward_Bank().SaveTaskItems(requireActivity(), rewardItems);
+
+            }
+        });
+
 
         // 从MaintaskFragment中获取PointsViewModel的实例
         pointsViewModel = ((MainActivity) getActivity()).getPointsViewModel();
@@ -112,6 +130,8 @@ public class RewardFragment extends Fragment {
                 textViewTotalPoints.setText("Total points: " + points);
             }
         });
+
+
 
 
         addItemLauncher = registerForActivityResult(

@@ -11,7 +11,7 @@
     <string name="string_item_price">"+%d"</string>
     <string name="string_item_point">point</string>
 
-
+    <string name="fab_content_desc">添加新项目</string>
     <string name="string_ok">ok</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
