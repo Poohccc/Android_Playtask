@@ -22,7 +22,7 @@ import com.jnu.student.data.PointsViewModel;
 
 public class MaintaskFragment extends Fragment {
 
-    private String[] tabHeaderStrings = {"每日任务", "普通任务"};//,"副本任务"
+    private String[] tabHeaderStrings = {"每日任务", "普通任务","副本任务"};//,"副本任务"
 
 
     // 声明一个PointsViewModel的变量
@@ -64,7 +64,7 @@ public class MaintaskFragment extends Fragment {
 
 
     public class FragmentAdapter extends FragmentStateAdapter {
-        private static final int NUM_TABS = 2;
+        private static final int NUM_TABS = 3;
 
         public FragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle) {
             super(fragmentManager, lifecycle);
@@ -79,9 +79,8 @@ public class MaintaskFragment extends Fragment {
                     return new DaytaskFragment();
                 case 1:
                     return new NormaltaskFragment();
-
-                //case 3:
-                //return new DaytaskFragment();
+                case 2:
+                    return new NormaltaskFragment();
                 default:
                     return null;
             }
