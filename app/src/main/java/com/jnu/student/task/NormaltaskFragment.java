@@ -28,12 +28,14 @@ import com.jnu.student.R;
 import com.jnu.student.data.Data_normal_Bank;
 
 import com.jnu.student.data.Data_reward_Bank;
+import com.jnu.student.data.DayTaskItem;
 import com.jnu.student.data.NorTaskItem;
 import com.jnu.student.data.PointsViewModel;
 import com.jnu.student.data.RewardItem;
 import com.jnu.student.main.MaintaskFragment;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 
 public class NormaltaskFragment extends Fragment {
@@ -303,10 +305,12 @@ public class NormaltaskFragment extends Fragment {
             viewHolder.checkbox_task.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    dayTaskItem.setCompleted(isChecked); // 切换任务的完成状态
+                    dayTaskItem.setCompleted(isChecked); // 切换任务的完成状态、
+                    DayTaskItem billItem = new DayTaskItem(dayTaskItem.getName(), dayTaskItem.getAchievement_Points(), new Date(),new Date());
                     if (isChecked) {
                         totalPoints += dayTaskItem.getAchievement_Points(); // 如果任务完成，增加积分
                         pointsViewModel.addPoints(dayTaskItem.getAchievement_Points());
+                        pointsViewModel.getBillItems().add(billItem);
                     } else {
                         totalPoints -= dayTaskItem.getAchievement_Points(); // 如果任务取消，减少积分
                         pointsViewModel.subtractPoints(dayTaskItem.getAchievement_Points());
@@ -314,6 +318,7 @@ public class NormaltaskFragment extends Fragment {
                     // 在这里可以显示或更新总的积分，例如使用一个TextView来显示
                     totalPoints= pointsViewModel.getTotalPoints().getValue();
                     textViewTotalPoints.setText("Total points: " + totalPoints);
+                    pointsViewModel. getBillItems().remove(billItem);  // 要重写BillItem的equals方法才能使这个方法有效
                 }
 
 

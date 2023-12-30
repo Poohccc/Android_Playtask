@@ -26,6 +26,7 @@ import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.jnu.student.data.DayTaskItem;
 import com.jnu.student.data.RewardItem;
 import com.jnu.student.data.PointsViewModel;
 import com.jnu.student.data.Data_reward_Bank;
@@ -33,6 +34,7 @@ import com.jnu.student.main.MainActivity;
 import com.jnu.student.task.BookItemDetailsActivity;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 
 public class RewardFragment extends Fragment {
@@ -310,10 +312,12 @@ public class RewardFragment extends Fragment {
 
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     dayTaskItem.setCompleted(isChecked); // 切换任务的完成状态
+                    DayTaskItem billItem = new DayTaskItem(dayTaskItem.getName(), dayTaskItem.getAchievement_Points(), new Date(),new Date());
                     if (isChecked) {
                         totalPoints -= dayTaskItem.getAchievement_Points(); // 如果任务完成，增加积分
                         pointsViewModel.subtractPoints(dayTaskItem.getAchievement_Points());
                         dayTaskItem.setCompleted(true);
+                        pointsViewModel.getBillItems().add(billItem);
                     } else {
                         totalPoints += dayTaskItem.getAchievement_Points(); // 如果任务取消，减少积分
                         dayTaskItem.setCompleted(false);
@@ -322,6 +326,8 @@ public class RewardFragment extends Fragment {
                     // 在这里可以显示或更新总的积分，例如使用一个TextView来显示
                     totalPoints= pointsViewModel.getTotalPoints().getValue();
                     textViewTotalPoints.setText("Total points: " + totalPoints);
+                    pointsViewModel. getBillItems().remove(billItem);  // 要重写BillItem的equals方法才能使这个方法有效
+
 
                 }
 

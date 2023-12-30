@@ -31,6 +31,9 @@ import com.jnu.student.data.Data_day_Bank;
 import com.jnu.student.main.MaintaskFragment;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 
 public class DaytaskFragment extends Fragment {
@@ -64,6 +67,9 @@ public class DaytaskFragment extends Fragment {
 
     // 声明一个PointsViewModel的变量
     private PointsViewModel pointsViewModel;
+
+    // 在你的BookListFragment中，声明一个HashMap来存储任务和分数
+    HashMap<String, Integer> taskBill = new HashMap<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -266,6 +272,8 @@ public class DaytaskFragment extends Fragment {
 
         }
 
+
+
         @Override
         public void onBindViewHolder(ViewHolder viewHolder, final int position) {
             if (!isEmpty){
@@ -281,16 +289,29 @@ public class DaytaskFragment extends Fragment {
 
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     dayTaskItem.setCompleted(isChecked); // 切换任务的完成状态
+
+                    DayTaskItem billItem = new DayTaskItem(dayTaskItem.getName(), dayTaskItem.getAchievement_Points(), new Date(),new Date());
                     if (isChecked) {
                         totalPoints += dayTaskItem.getAchievement_Points(); // 如果任务完成，增加积分
                         pointsViewModel.addPoints(dayTaskItem.getAchievement_Points());
+
+                        // Update shared ViewModel
+                        pointsViewModel.getBillItems().add(billItem);
+
+
                     } else {
                         totalPoints -= dayTaskItem.getAchievement_Points(); // 如果任务取消，减少积分
                         pointsViewModel.subtractPoints(dayTaskItem.getAchievement_Points());
+
+                        // Update shared ViewModel
+                        pointsViewModel. getBillItems().remove(billItem);  // 要重写BillItem的equals方法才能使这个方法有效
+
+
                     }
                     // 在这里可以显示或更新总的积分，例如使用一个TextView来显示
                     totalPoints= pointsViewModel.getTotalPoints().getValue();
                     textViewTotalPoints.setText("Total points: " + totalPoints);
+                    // 通知 BillFragment 关于变化
 
                 }
 

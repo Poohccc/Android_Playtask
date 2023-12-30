@@ -12,6 +12,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.jnu.student.BillFragment;
 import com.jnu.student.R;
 import com.jnu.student.RewardFragment;
 import com.jnu.student.WeektaskFragment;
@@ -65,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
                 case 1:
                     return new RewardFragment();
                 case 2:
-                    return new webFragment();
+                    return new BillFragment() ;
 
                 default:
                     return null;
