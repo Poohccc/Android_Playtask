@@ -1,4 +1,4 @@
-package com.jnu.student;
+package com.jnu.student.bill;
 
 import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.jnu.student.R;
 import com.jnu.student.data.DayTaskItem;
 import com.jnu.student.data.PointsViewModel;
 

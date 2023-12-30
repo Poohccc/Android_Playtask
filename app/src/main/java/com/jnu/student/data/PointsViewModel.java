@@ -6,11 +6,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.jnu.student.BillFragment;
-
-import java.util.ArrayList;
-import java.util.List;
-
 public class PointsViewModel extends ViewModel {
     // 使用LiveData封装totalPoints，这样可以在数据变化时通知观察者
     private MutableLiveData<Double> totalPoints;

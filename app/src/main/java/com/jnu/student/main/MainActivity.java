@@ -12,12 +12,10 @@ import androidx.viewpager2.widget.ViewPager2;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
-import com.jnu.student.BillFragment;
+import com.jnu.student.bill.BillFragment;
 import com.jnu.student.R;
-import com.jnu.student.RewardFragment;
-import com.jnu.student.WeektaskFragment;
+import com.jnu.student.reward.RewardFragment;
 import com.jnu.student.data.PointsViewModel;
-import com.jnu.student.webFragment;
 
 
 public class MainActivity extends AppCompatActivity {

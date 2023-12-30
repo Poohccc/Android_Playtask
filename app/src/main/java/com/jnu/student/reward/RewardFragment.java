@@ -1,4 +1,4 @@
-package com.jnu.student;
+package com.jnu.student.reward;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -26,6 +26,7 @@ import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.jnu.student.R;
 import com.jnu.student.data.DayTaskItem;
 import com.jnu.student.data.RewardItem;
 import com.jnu.student.data.PointsViewModel;
